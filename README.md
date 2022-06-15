@@ -19,4 +19,4 @@ Below is the technical stack on what I have used:
  
  This can be run from the command prompt too, by the command Python app.py
 
- 
+ I have used Postman for testing the API. Upload the request of the same.
