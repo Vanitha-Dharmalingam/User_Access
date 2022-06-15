@@ -1,4 +1,5 @@
 import json
+import re
 
 from bson import json_util
 from bson.json_util import dumps
@@ -16,18 +17,23 @@ def add_user():
     _name = _json['name']
     _companyName = _json['companyName']
     _groupName = _json['groupName']
-
-    if _name and _companyName and _groupName and request.method == 'POST':
-        _company = get_companyID(_companyName)
+    regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+    _company = get_companyID(_companyName)
+    _companyID = None
+    if not isinstance(_company, str):
         _companyID = _company['companyID']
-        _group = get_groupID(_groupName)
+    _group = get_groupID(_groupName)
+    _groupID = None
+    if not isinstance(_group, str):
         _groupID = _group['groupID']
+    if (re.fullmatch(regex, _name)) and _companyID and _groupID and request.method == 'POST':
         id = mongo.db.user.insert_one({'username': _name, 'companyid': _companyID, 'groupid': _groupID})
         resp = jsonify('User added successfully!')
         resp.status_code = 200
         return resp
     else:
-        return not_found()
+        return jsonify('Please Check whether the value given for username, company name and group name is valid.'
+                       'User Name should be valid email address')
 
 
 """ This API is used to view the list of users"""
@@ -73,8 +79,12 @@ def get_groupWithMaxID():
 
 def get_companyID(companyName):
     company = mongo.db.company.find({"companyName": companyName})
-    output = list(company)[0]
-    return json.loads(json_util.dumps(output))
+    companylist = list(company)
+    if len(companylist) > 0:
+        output = companylist[0]
+        return json.loads(json_util.dumps(output))
+    else:
+        return 'Not a valid company name'
 
 
 """ This method returns the group id for the given group name"""
@@ -82,8 +92,12 @@ def get_companyID(companyName):
 
 def get_groupID(groupName):
     group = mongo.db.group.find({"groupName": groupName})
-    output = list(group)[0]
-    return json.loads(json_util.dumps(output))
+    grouplist = list(group)
+    if len(grouplist) > 0:
+        output = grouplist[0]
+        return json.loads(json_util.dumps(output))
+    else:
+        return 'Not a valid group name'
 
 
 @app.errorhandler(404)
