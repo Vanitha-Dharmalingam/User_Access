@@ -7,13 +7,41 @@
 	},
 	"item": [
 		{
-			"name": "http://localhost:5000/adduser",
+			"name": "Valid Request for adding User",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"name\": \"aadhira@my-company.com\",\r\n    \"companyName\": \"My-Company\",\r\n    \"groupName\": \"User\"\r\n}",
+					"raw": "{\r\n    \"name\": \"krithi@company.com\",\r\n    \"companyName\": \"My-Company\",\r\n    \"groupName\": \"User\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/adduser",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"adduser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Invalid Email ID",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"@my-company.com\",\r\n    \"companyName\": \"My-Company\",\r\n    \"groupName\": \"User\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
